@@ -1,0 +1,14 @@
+[
+  {
+    "name": "httpd",
+    "image": "httpd:latest",
+    "essential": true,
+    "memory": 128,
+    "portMappings": [
+      {
+        "protocol": "tcp",
+        "containerPort": 80
+      }
+    ]
+  }
+]
