@@ -13,8 +13,6 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...
       - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
-      # - docker pull public.ecr.aws/docker/library/httpd:alpine3.16
-      # - docker tag public.ecr.aws/docker/library/httpd:alpine3.16 $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
       - echo Build completed on `date`
