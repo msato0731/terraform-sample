@@ -1,5 +1,4 @@
 version: 0.2
-# TODO: appデプロイ用の修正(現状サンプルapp)
 phases:
   pre_build:
     commands:
