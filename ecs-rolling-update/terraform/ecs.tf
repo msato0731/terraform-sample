@@ -7,10 +7,11 @@ resource "aws_ecs_cluster" "this" {
 }
 
 resource "aws_ecs_service" "sample_app" {
-  name             = local.name_prefix
-  cluster          = aws_ecs_cluster.this.arn
-  launch_type      = "FARGATE"
-  task_definition  = aws_ecs_task_definition.sample_app.arn
+  name        = local.name_prefix
+  cluster     = aws_ecs_cluster.this.arn
+  launch_type = "FARGATE"
+  # CodePipelineでデプロイ時にリビジョンが更新されるため、最新のrevisionをdataで取得
+  task_definition  = data.aws_ecs_task_definition.sample_app.arn
   desired_count    = 1
   platform_version = "1.4.0"
 
@@ -30,7 +31,7 @@ resource "aws_ecs_service" "sample_app" {
   }
 
   lifecycle {
-    ignore_changes = [task_definition, desired_count]
+    ignore_changes = [desired_count]
   }
 }
 
@@ -40,6 +41,12 @@ resource "aws_ecs_task_definition" "sample_app" {
   memory                   = 512
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  container_definitions    = file("./file/container_definitions.json")
-  execution_role_arn       = aws_iam_role.ecs_tasks.arn
+  container_definitions = templatefile("./file/container_definitions.json", {
+    ecr_repository_url : aws_ecr_repository.httpd.repository_url,
+  })
+  execution_role_arn = aws_iam_role.ecs_tasks.arn
+}
+
+data "aws_ecs_task_definition" "sample_app" {
+  task_definition = aws_ecs_task_definition.sample_app.family
 }

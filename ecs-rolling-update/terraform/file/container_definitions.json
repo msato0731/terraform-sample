@@ -1,7 +1,7 @@
 [
   {
     "name": "httpd",
-    "image": "httpd:latest",
+    "image": "${ecr_repository_url}:latest",
     "essential": true,
     "memory": 128,
     "portMappings": [
