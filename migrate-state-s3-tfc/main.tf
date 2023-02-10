@@ -6,9 +6,6 @@ terraform {
     }
   }
   cloud {
-    organization = "classmethod-sandbox"
-    hostname = "app.terraform.io"
-
     workspaces {
       name = "migrate-state-s3-tfc"
     }
@@ -21,7 +18,6 @@ terraform {
 #     encrypt        = true
 #     dynamodb_table = "terraform-state-201472471660-02"
 #   }
-# }
 
 provider "aws" {
   region = "ap-northeast-1"
