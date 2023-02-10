@@ -15,8 +15,3 @@ variable "aws_region" {
   default     = "ap-northeast-1"
   description = "AWS region for all resources"
 }
-
-variable "tfc_organization_name" {
-  type        = string
-  description = "The name of your Terraform Cloud organization"
-}
