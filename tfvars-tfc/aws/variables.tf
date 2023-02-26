@@ -15,3 +15,25 @@ variable "aws_region" {
   default     = "ap-northeast-1"
   description = "AWS region for all resources"
 }
+
+
+resource "tfe_organization" "main" {
+  name  = "my-org-name"
+  email = "admin@company.com"
+}
+
+resource "tfe_workspace" "test" {
+  name         = "test-workspace"
+  organization = tfe_organization.main.name
+}
+
+resource "tfe_workspace" "stg" {
+  name         = "stg-workspace"
+  organization = tfe_organization.main.name
+}
+
+resource "tfe_workspace" "prod" {
+  name         = "prod-workspace"
+  organization = tfe_organization.main.name
+}
+
