@@ -34,3 +34,4 @@ override.tf.json
 terraform.rc
 
 .idea/*
+tfstate-ref-tfc/*/backend.tf

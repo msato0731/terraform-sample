@@ -1,0 +1,10 @@
+terraform {
+  cloud {
+    organization = "<organization名>" # 要修正
+
+    workspaces {
+      name = "tfstate-ref-tfc-test-security-group"
+    }
+  }
+}
+
