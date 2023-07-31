@@ -1,0 +1,1 @@
+target_aws_account_id = "<Pipelineを使用してリソースをデプロイするAWSアカウントID>"
