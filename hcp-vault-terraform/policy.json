@@ -1,0 +1,26 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "iam:AttachUserPolicy",
+          "iam:CreateAccessKey",
+          "iam:CreateUser",
+          "iam:DeleteAccessKey",
+          "iam:DeleteUser",
+          "iam:DeleteUserPolicy",
+          "iam:DetachUserPolicy",
+          "iam:GetUser",
+          "iam:ListAccessKeys",
+          "iam:ListAttachedUserPolicies",
+          "iam:ListGroupsForUser",
+          "iam:ListUserPolicies",
+          "iam:PutUserPolicy",
+          "iam:AddUserToGroup",
+          "iam:RemoveUserFromGroup"
+        ],
+        "Resource": ["arn:aws:iam::201472471660:user/vault-*"]
+      }
+    ]
+  }
