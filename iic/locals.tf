@@ -59,8 +59,7 @@ locals {
   ################################################################################
   # Membership
   ################################################################################
-  # user名とgroupだけを抽出
-  # 例: "taro.test@example.com"   = ["infra_team"]
+  # Valueをgroupだけにする
   extract_users_groups_only = {
     for user, user_data in local.users : user => user_data.groups
   }
