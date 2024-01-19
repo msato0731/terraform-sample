@@ -27,6 +27,10 @@ resource "aws_identitystore_user" "this" {
   }
 }
 
+################################################################################
+# Membership
+################################################################################
+
 resource "aws_identitystore_group_membership" "this" {
   for_each = local.users_groups_membership
 

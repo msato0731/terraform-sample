@@ -13,13 +13,13 @@ locals {
       name        = "HogeDevelopperTeam"
       description = "hoge servide prd:read, stg:admin"
     }
-    fuga_dev = {
-      name        = "FugaDevelopperTeam"
-      description = "fuga servide prd:read, stg:admin"
-    }
     fuga_admin = {
       name        = "FugaAdministrator"
       description = "fuga service prd/stg:admin"
+    }
+    fuga_dev = {
+      name        = "FugaDevelopperTeam"
+      description = "fuga servide prd:read, stg:admin"
     }
   }
   ################################################################################
@@ -49,7 +49,7 @@ locals {
     "saburo.test@example.com" = {
       name = {
         family_name = "Test"
-        given_name  = "Taro"
+        given_name  = "Saburo"
       }
       groups = [
         "hoge_dev"
