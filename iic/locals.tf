@@ -1,16 +1,25 @@
 locals {
   identity_store_id = tolist(data.aws_ssoadmin_instances.this.identity_store_ids)[0]
+  instance_arn      = tolist(data.aws_ssoadmin_instances.this.arns)[0]
   ################################################################################
   # Groups
   ################################################################################
   groups = {
-    infra_team = {
-      name        = "InfraTeam"
-      description = "prd/stg:admin"
+    hoge_admin = {
+      name        = "HogeAdministrator"
+      description = "hoge service prd/stg:admin"
     }
-    dev_team = {
-      name        = "DevTeam"
-      description = "prd:read, stg:admin"
+    hoge_dev = {
+      name        = "HogeDevelopperTeam"
+      description = "hoge servide prd:read, stg:admin"
+    }
+    fuga_dev = {
+      name        = "FugaDevelopperTeam"
+      description = "fuga servide prd:read, stg:admin"
+    }
+    fuga_admin = {
+      name        = "FugaAdministrator"
+      description = "fuga service prd/stg:admin"
     }
   }
   ################################################################################
@@ -23,7 +32,8 @@ locals {
         given_name  = "Taro"
       }
       groups = [
-        "infra_team"
+        "hoge_admin",
+        "fuga_admin",
       ]
     }
     "jiro.test@example.com" = {
@@ -32,7 +42,8 @@ locals {
         given_name  = "Jiro"
       }
       groups = [
-        "dev_team"
+        "hoge_dev",
+        "fuga_dev"
       ]
     }
     "saburo.test@example.com" = {
@@ -41,8 +52,7 @@ locals {
         given_name  = "Taro"
       }
       groups = [
-        "dev_team",
-        "infra_team"
+        "hoge_dev"
       ]
     }
   }
@@ -75,4 +85,67 @@ locals {
       [for item in local.users_groups_combined : values(item)]
     )
   )
+  ################################################################################
+  # Account Assignments
+  ################################################################################
+  account_assignments = [
+    # Hoge Service Production
+    {
+      account_id = var.account_ids.hoge_prd
+      # aws_identitystore_groupのAttributeにgroup_nameがないため、localsから取得(aws provider 5.32.1時点)
+      group_name          = local.groups["hoge_admin"].name
+      group_id            = aws_identitystore_group.this["hoge_admin"].group_id
+      permission_set_name = aws_ssoadmin_permission_set.administrator_access.name
+      permission_set_arn  = aws_ssoadmin_permission_set.administrator_access.arn
+    },
+    {
+      account_id          = var.account_ids.hoge_prd
+      group_name          = local.groups["hoge_dev"].name
+      group_id            = aws_identitystore_group.this["hoge_dev"].group_id
+      permission_set_name = aws_ssoadmin_permission_set.readonly_access.name
+      permission_set_arn  = aws_ssoadmin_permission_set.readonly_access.arn
+    },
+    # Hoge Service Staging
+    {
+      account_id          = var.account_ids.hoge_stg
+      group_name          = local.groups["hoge_admin"].name
+      group_id            = aws_identitystore_group.this["hoge_admin"].group_id
+      permission_set_name = aws_ssoadmin_permission_set.administrator_access.name
+      permission_set_arn  = aws_ssoadmin_permission_set.administrator_access.arn
+    },
+    {
+      account_id          = var.account_ids.hoge_stg
+      group_name          = local.groups["hoge_dev"].name
+      group_id            = aws_identitystore_group.this["hoge_dev"].group_id
+      permission_set_name = aws_ssoadmin_permission_set.administrator_access.name
+      permission_set_arn  = aws_ssoadmin_permission_set.administrator_access.arn
+    },
+
+    # {
+    #   group_name          = local.groups["fuga_admin"].name
+    #   account_id             = var.account_ids.fuga_prd
+    #   permission_set_name = aws_ssoadmin_permission_set.administrator_access.name
+    # },
+    # {
+    #   group_name          = local.groups["fuga_admin"].name
+    #   account_id             = var.account_ids.fuga_stg
+    #   permission_set_name = aws_ssoadmin_permission_set.administrator_access.name
+    # },
+    # {
+    #   group_name          = local.groups["fuga_dev"].name
+    #   account_id             = var.account_ids.fuga_prd
+    #   permission_set_name = aws_ssoadmin_permission_set.readonly_access.name
+    # },
+    # {
+    #   group_name          = local.groups["fuga_dev"].name
+    #   account_id             = var.account_ids.fuga_stg
+    #   permission_set_name = aws_ssoadmin_permission_set.administrator_access.name
+    # }
+  ]
+
+  # アカウントID-グループ名-PermissionSet名をキーに設定
+  assignment_map = {
+    for a in local.account_assignments :
+    format("%v-%v-%v", a.account_id, a.group_name, a.permission_set_name) => a
+  }
 }
