@@ -93,34 +93,29 @@ locals {
     {
       account_id = var.account_ids.hoge_prd
       # aws_identitystore_groupのAttributeにgroup_nameがないため、localsから取得(aws provider 5.32.1時点)
-      group_name          = local.groups["hoge_admin"].name
-      group_id            = aws_identitystore_group.this["hoge_admin"].group_id
-      permission_set_name = aws_ssoadmin_permission_set.administrator_access.name
-      permission_set_arn  = aws_ssoadmin_permission_set.administrator_access.arn
+      group_name     = local.groups["hoge_admin"].name
+      group_id       = aws_identitystore_group.this["hoge_admin"].group_id
+      permission_set = aws_ssoadmin_permission_set.administrator_access
     },
     {
-      account_id          = var.account_ids.hoge_prd
-      group_name          = local.groups["hoge_dev"].name
-      group_id            = aws_identitystore_group.this["hoge_dev"].group_id
-      permission_set_name = aws_ssoadmin_permission_set.readonly_access.name
-      permission_set_arn  = aws_ssoadmin_permission_set.readonly_access.arn
+      account_id     = var.account_ids.hoge_prd
+      group_name     = local.groups["hoge_dev"].name
+      group_id       = aws_identitystore_group.this["hoge_dev"].group_id
+      permission_set = aws_ssoadmin_permission_set.readonly_access
     },
     # Hoge Service Staging
     {
-      account_id          = var.account_ids.hoge_stg
-      group_name          = local.groups["hoge_admin"].name
-      group_id            = aws_identitystore_group.this["hoge_admin"].group_id
-      permission_set_name = aws_ssoadmin_permission_set.administrator_access.name
-      permission_set_arn  = aws_ssoadmin_permission_set.administrator_access.arn
+      account_id     = var.account_ids.hoge_stg
+      group_name     = local.groups["hoge_admin"].name
+      group_id       = aws_identitystore_group.this["hoge_admin"].group_id
+      permission_set = aws_ssoadmin_permission_set.administrator_access
     },
     {
-      account_id          = var.account_ids.hoge_stg
-      group_name          = local.groups["hoge_dev"].name
-      group_id            = aws_identitystore_group.this["hoge_dev"].group_id
-      permission_set_name = aws_ssoadmin_permission_set.administrator_access.name
-      permission_set_arn  = aws_ssoadmin_permission_set.administrator_access.arn
+      account_id     = var.account_ids.hoge_stg
+      group_name     = local.groups["hoge_dev"].name
+      group_id       = aws_identitystore_group.this["hoge_dev"].group_id
+      permission_set = aws_ssoadmin_permission_set.administrator_access
     },
-
     # {
     #   group_name          = local.groups["fuga_admin"].name
     #   account_id             = var.account_ids.fuga_prd
@@ -146,6 +141,6 @@ locals {
   # アカウントID-グループ名-PermissionSet名をキーに設定
   assignment_map = {
     for a in local.account_assignments :
-    format("%v-%v-%v", a.account_id, a.group_name, a.permission_set_name) => a
+    format("%v-%v-%v", a.account_id, a.group_name, a.permission_set.name) => a
   }
 }
