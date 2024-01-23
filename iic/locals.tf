@@ -59,15 +59,11 @@ locals {
   ################################################################################
   # Membership
   ################################################################################
-  # Valueをgroupだけにする
-  extract_users_groups_only = {
-    for user, user_data in local.users : user => user_data.groups
-  }
 
   # ユーザーとユーザーが属するグループの組み合わせを作成
   users_groups_combined = [
-    for user, groups in local.extract_users_groups_only : {
-      for group in groups :
+    for user, user_data in local.users : {
+      for group in user_data.groups :
       "${user}_${group}" => {
         "user"  = user
         "group" = group
@@ -84,6 +80,7 @@ locals {
       [for item in local.users_groups_combined : values(item)]
     )
   )
+
   ################################################################################
   # Account Assignments
   ################################################################################
