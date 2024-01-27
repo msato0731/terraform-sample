@@ -71,7 +71,7 @@ locals {
     }
   ]
 
-  # listで入っているため、使いやすいようにmapに変換する
+  # ユーザーがブロックごとに分かれているため、ユーザーとグループの組み合わせを1つのブロックにまとめる
   users_groups_membership = zipmap(
     flatten(
       [for item in local.users_groups_combined : keys(item)]
@@ -81,58 +81,75 @@ locals {
     )
   )
 
+  ########################
+  # Permissions
+  ########################
+  permission_sets = {
+    "admin" = {
+      name               = "AdministratorAccess"
+      description        = "Provides full access to AWS services and resources."
+      managed_policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+    },
+    "read_only" = {
+      name               = "ReadOnlyAccess"
+      description        = "Provides read-only access to AWS services and resources."
+      managed_policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+    }
+  }
+
   ################################################################################
   # Account Assignments
   ################################################################################
   account_assignments = [
     # Hoge Service Production
     {
-      account_id = var.account_ids.hoge_prd
-      # aws_identitystore_groupのAttributeにgroup_nameがないため、localsから取得(aws provider 5.32.1時点)
+      account_id     = var.account_ids.hoge_prd
       group          = "hoge_admin"
-      permission_set = aws_ssoadmin_permission_set.administrator_access
+      permission_set = "admin"
     },
     {
       account_id     = var.account_ids.hoge_prd
       group          = "hoge_dev"
-      permission_set = aws_ssoadmin_permission_set.readonly_access
+      permission_set = "read_only"
     },
     # Hoge Service Staging
     {
       account_id     = var.account_ids.hoge_stg
       group          = "hoge_admin"
-      permission_set = aws_ssoadmin_permission_set.administrator_access
+      permission_set = "admin"
     },
     {
       account_id     = var.account_ids.hoge_stg
       group          = "hoge_dev"
-      permission_set = aws_ssoadmin_permission_set.administrator_access
+      permission_set = "admin"
     },
-    # {
-    #   group_name          = local.groups["fuga_admin"].name
-    #   account_id             = var.account_ids.fuga_prd
-    #   permission_set_name = aws_ssoadmin_permission_set.administrator_access.name
-    # },
-    # {
-    #   group_name          = local.groups["fuga_admin"].name
-    #   account_id             = var.account_ids.fuga_stg
-    #   permission_set_name = aws_ssoadmin_permission_set.administrator_access.name
-    # },
-    # {
-    #   group_name          = local.groups["fuga_dev"].name
-    #   account_id             = var.account_ids.fuga_prd
-    #   permission_set_name = aws_ssoadmin_permission_set.readonly_access.name
-    # },
-    # {
-    #   group_name          = local.groups["fuga_dev"].name
-    #   account_id             = var.account_ids.fuga_stg
-    #   permission_set_name = aws_ssoadmin_permission_set.administrator_access.name
-    # }
+    # Fuga Service Production
+    {
+      account_id     = var.account_ids.fuga_prd
+      group          = "fuga_admin"
+      permission_set = "admin"
+    },
+    {
+      account_id     = var.account_ids.fuga_prd
+      group          = "fuga_dev"
+      permission_set = "read_only"
+    },
+    # Fuga Service Staging
+    {
+      account_id     = var.account_ids.fuga_stg
+      group          = "fuga_admin"
+      permission_set = "admin"
+    },
+    {
+      account_id     = var.account_ids.fuga_stg
+      group          = "fuga_dev"
+      permission_set = "admin"
+    }
   ]
 
   # アカウントID-グループ名-PermissionSet名をキーに設定
   assignment_map = {
     for a in local.account_assignments :
-    format("%v-%v-%v", a.account_id, local.groups[a.group].name, a.permission_set.name) => a
+    format("%v-%v-%v", a.account_id, local.groups[a.group].name, local.permission_sets[a.permission_set].name) => a
   }
 }
