@@ -124,27 +124,27 @@ locals {
       permission_set = "admin"
     },
     # Fuga Service Production
-    # {
-    #   account_id     = var.account_ids.fuga_prd
-    #   group          = "fuga_admin"
-    #   permission_set = "admin"
-    # },
-    # {
-    #   account_id     = var.account_ids.fuga_prd
-    #   group          = "fuga_dev"
-    #   permission_set = "read_only"
-    # },
-    # # Fuga Service Staging
-    # {
-    #   account_id     = var.account_ids.fuga_stg
-    #   group          = "fuga_admin"
-    #   permission_set = "admin"
-    # },
-    # {
-    #   account_id     = var.account_ids.fuga_stg
-    #   group          = "fuga_dev"
-    #   permission_set = "admin"
-    # }
+    {
+      account_id     = var.account_ids.fuga_prd
+      group          = "fuga_admin"
+      permission_set = "admin"
+    },
+    {
+      account_id     = var.account_ids.fuga_prd
+      group          = "fuga_dev"
+      permission_set = "read_only"
+    },
+    # Fuga Service Staging
+    {
+      account_id     = var.account_ids.fuga_stg
+      group          = "fuga_admin"
+      permission_set = "admin"
+    },
+    {
+      account_id     = var.account_ids.fuga_stg
+      group          = "fuga_dev"
+      permission_set = "admin"
+    }
   ]
 
   # アカウントID-グループ名-PermissionSet名をキーに設定
