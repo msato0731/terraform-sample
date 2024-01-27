@@ -71,7 +71,7 @@ locals {
     }
   ]
 
-  # listで入っているため、使いやすいようにmapに変換する
+  # ユーザーがブロックごとに分かれているため、ユーザーとグループの組み合わせを1つのブロックにまとめる
   users_groups_membership = zipmap(
     flatten(
       [for item in local.users_groups_combined : keys(item)]
@@ -103,8 +103,7 @@ locals {
   account_assignments = [
     # Hoge Service Production
     {
-      account_id = var.account_ids.hoge_prd
-      # aws_identitystore_groupのAttributeにgroup_nameがないため、localsから取得(aws provider 5.32.1時点)
+      account_id     = var.account_ids.hoge_prd
       group          = "hoge_admin"
       permission_set = "admin"
     },
@@ -122,27 +121,29 @@ locals {
     {
       account_id     = var.account_ids.hoge_stg
       group          = "hoge_dev"
-      permission_set = "read_only"
+      permission_set = "admin"
     },
+    # Fuga Service Production
     # {
-    #   group_name          = local.groups["fuga_admin"].name
-    #   account_id             = var.account_ids.fuga_prd
-    #   permission_set_name = aws_ssoadmin_permission_set.administrator_access.name
+    #   account_id     = var.account_ids.fuga_prd
+    #   group          = "fuga_admin"
+    #   permission_set = "admin"
     # },
     # {
-    #   group_name          = local.groups["fuga_admin"].name
-    #   account_id             = var.account_ids.fuga_stg
-    #   permission_set_name = aws_ssoadmin_permission_set.administrator_access.name
+    #   account_id     = var.account_ids.fuga_prd
+    #   group          = "fuga_dev"
+    #   permission_set = "read_only"
+    # },
+    # # Fuga Service Staging
+    # {
+    #   account_id     = var.account_ids.fuga_stg
+    #   group          = "fuga_admin"
+    #   permission_set = "admin"
     # },
     # {
-    #   group_name          = local.groups["fuga_dev"].name
-    #   account_id             = var.account_ids.fuga_prd
-    #   permission_set_name = aws_ssoadmin_permission_set.readonly_access.name
-    # },
-    # {
-    #   group_name          = local.groups["fuga_dev"].name
-    #   account_id             = var.account_ids.fuga_stg
-    #   permission_set_name = aws_ssoadmin_permission_set.administrator_access.name
+    #   account_id     = var.account_ids.fuga_stg
+    #   group          = "fuga_dev"
+    #   permission_set = "admin"
     # }
   ]
 
