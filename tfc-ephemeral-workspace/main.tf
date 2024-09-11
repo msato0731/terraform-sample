@@ -12,4 +12,7 @@ terraform {
 
 resource "aws_sqs_queue" "sqs_queue" {
   name = "sato-epehemeral-workspace-test"
+  tags = {
+    Environment = "test"
+  }
 }
