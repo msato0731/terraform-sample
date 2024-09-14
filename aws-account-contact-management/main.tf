@@ -5,9 +5,9 @@ resource "aws_account_primary_contact" "main" {
   city            = "Minato-ku"
   address_line_1  = "1-1 Nishishinbashi"
   full_name       = "Test Taro"
-  phone_number = "+81xxxxxxx"
-  company_name = "Classmethod,Inc"
-  website_url  = "https://classmethod.jp/"
+  phone_number    = "+81xxxxxxx"
+  company_name    = "Classmethod,Inc"
+  website_url     = "https://classmethod.jp/"
 }
 
 resource "aws_account_alternate_contact" "operations" {

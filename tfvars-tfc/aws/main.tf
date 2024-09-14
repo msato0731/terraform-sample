@@ -5,7 +5,7 @@ provider "aws" {
 terraform {
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "~> 4.49.0"
     }
   }
@@ -29,5 +29,5 @@ data "aws_ami" "amazon_linux" {
 resource "aws_instance" "web" {
   ami           = data.aws_ami.amazon_linux.id
   instance_type = var.instance_type
-  tags = var.tags
+  tags          = var.tags
 }
