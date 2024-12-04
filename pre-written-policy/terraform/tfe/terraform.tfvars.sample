@@ -1,0 +1,4 @@
+organization_name          = "hoge"
+project_name               = "hoge"
+github_app_installation_id = "ghain-xxxxx"
+vcs_repo_identifier        = "hoge/fuga"
