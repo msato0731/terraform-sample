@@ -1,0 +1,1 @@
+{"base":"main","head":"${var.branch}","commit_message":"Merged from Waypoint"}
