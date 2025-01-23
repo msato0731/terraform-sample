@@ -1,0 +1,16 @@
+aws_region          = "" # Optional
+aws_route53_domain  = ""
+aws_route53_zone_id = ""
+
+gh_token             = ""
+gh_organization_name = ""
+
+hcp_project_id = ""
+
+hcp_tf_aws_run_role_arn   = ""
+hcp_tf_organization_name  = ""
+hcp_tf_project_name       = "" # Optional
+hcp_tf_team_name          = "" # Optional
+hcp_tf_variables_set_name = "" # Optional
+
+slack_hook_url = ""
