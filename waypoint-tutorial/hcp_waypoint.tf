@@ -80,3 +80,11 @@ resource "hcp_waypoint_action" "this" {
     }
   }
 }
+
+data "hcp_waypoint_application" "this" {
+  name = "mywebapp"
+}
+
+output "waypoint_app_output" {
+  value = data.hcp_waypoint_application.this.output_values
+}
