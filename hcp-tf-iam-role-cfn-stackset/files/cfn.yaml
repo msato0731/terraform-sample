@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'HCP Terraform OIDC Provider and IAM Role'
+
+Parameters:
+  HCPTerraformOrgName:
+    Type: String
+    Description: 'HCP Terraform Organization Name'
+  HCPTerraformIAMRoleName:
+    Type: String
+    Description: 'HCP Terraform IAM Role Name'
+
+Resources:
+  HCPTerraformOIDCProvider:
+    Type: 'AWS::IAM::OIDCProvider'
+    Properties:
+      Url: 'https://app.terraform.io'
+      ClientIdList:
+        - 'aws.workload.identity'
+
+  HCPTerraformRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: !Ref HCPTerraformIAMRoleName
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !GetAtt HCPTerraformOIDCProvider.Arn
+            Action: 'sts:AssumeRoleWithWebIdentity'
+            Condition:
+              StringEquals:
+                'app.terraform.io:aud': 'aws.workload.identity'
+              StringLike:
+                'app.terraform.io:sub': !Sub 'organization:${HCPTerraformOrgName}:project:*:workspace:*:run_phase:*'
+
+  HCPTerraformRolePolicyAttachment:
+    Type: 'AWS::IAM::RolePolicy'
+    Properties:
+      PolicyName: 'AdministratorAccess'
+      RoleName: !Ref HCPTerraformRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: '*'
+            Resource: '*'
+
+Outputs:
+  RoleArn:
+    Description: 'ARN of the created IAM Role'
+    Value: !GetAtt HCPTerraformRole.Arn
