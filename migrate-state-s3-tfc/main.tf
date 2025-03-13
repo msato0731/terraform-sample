@@ -12,11 +12,11 @@ terraform {
   }
 }
 #   backend "s3" {
-#     bucket         = "terraform-state-201472471660-02"
+#     bucket         = "terraform-state-hoge"
 #     key            = "terraform.tfstate"
 #     region         = "ap-northeast-1"
 #     encrypt        = true
-#     dynamodb_table = "terraform-state-201472471660-02"
+#     dynamodb_table = "terraform-state-hoge"
 #   }
 
 provider "aws" {
