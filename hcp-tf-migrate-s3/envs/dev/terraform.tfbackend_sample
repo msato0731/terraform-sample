@@ -1,0 +1,4 @@
+bucket  = ""
+region  = "ap-northeast-1"
+key     = "" # example: "hoge/terraform.tfstate"
+encrypt = true
