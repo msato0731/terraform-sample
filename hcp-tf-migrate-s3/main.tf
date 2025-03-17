@@ -5,7 +5,9 @@ terraform {
       version = ">= 5.90.1"
     }
   }
-  backend "s3" {}
+  # backend "s3" {}
+  # ローカルからterraform cli実行にはcloudブロックが必要
+  cloud {}
 }
 
 provider "aws" {
