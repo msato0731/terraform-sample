@@ -26,5 +26,9 @@ tf init --backend-config="backend.tfvars"
 TFC使う場合。
 
 ```bash
-export TF_CLOUD_ORGANIZATION="<Org名>"
+export TF_CLOUD_ORGANIZATION="<Organization>"
+export TF_CLOUD_PROJECT="<Project>"
+export TF_WORKSPACE="<Workspace>"
 ```
+
+[Terraform block configuration reference \| Terraform \| HashiCorp Developer](https://developer.hashicorp.com/terraform/language/terraform#environment-variables-for-the-cloud-block)

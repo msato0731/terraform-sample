@@ -38,3 +38,5 @@ terraform.rc
 tfstate-ref-tfc/*/backend.tf
 
 .pluralith
+
+.env
