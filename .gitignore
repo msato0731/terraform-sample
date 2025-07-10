@@ -40,3 +40,8 @@ tfstate-ref-tfc/*/backend.tf
 .pluralith
 
 .env
+
+.claude
+CLAUDE.md
+
+backend.tf
