@@ -13,14 +13,14 @@ module "vpc" {
 }
 
 data "aws_ssm_parameter" "amazonlinux_2023" {
-  name = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64"
+  name = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-arm64"
 }
 
 resource "aws_instance" "hcp_tf_agent" {
   ami                         = data.aws_ssm_parameter.amazonlinux_2023.value
   associate_public_ip_address = true
   vpc_security_group_ids      = [aws_security_group.hcp_tf_agent.id]
-  instance_type               = "t3.small"
+  instance_type               = "t4g.small"
   subnet_id                   = module.vpc.public_subnets[0]
   iam_instance_profile        = aws_iam_instance_profile.ssm_profile.name
   tags = {
