@@ -1,0 +1,2 @@
+# Slack webhook URL for notifications
+slack_webhook_url = "https://hooks.slack.com/services/hoge/fuga/piyo"

@@ -1,0 +1,42 @@
+{
+  "Comment": "Send service quota alerts to Slack",
+  "StartAt": "SendSlackNotification",
+  "States": {
+    "SendSlackNotification": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::http:invoke",
+      "Parameters": {
+        "ApiEndpoint": "${slack_webhook_url}",
+        "Method": "POST",
+        "Headers": {
+          "Content-Type": "application/json"
+        },
+        "RequestBody": {
+          "text.$": "States.Format('*Trusted Advisor Service Quota*\n\n*Check*: {}\n*Status*: {}\n*Region*: {}\n*Account*: {}\n\n*Console Link*: https://{}.signin.aws.amazon.com/console/trustedadvisor?region={}', $.checkname, $.status, $.region, $.account, $.account, $.region)"
+        },
+        "InvocationConfig": {
+          "ConnectionArn": "${connection_arn}"
+        }
+      },
+      "End": true,
+      "Retry": [
+        {
+          "ErrorEquals": ["States.Http.HttpRequestFailed"],
+          "IntervalSeconds": 5,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "NotificationFailed"
+        }
+      ]
+    },
+    "NotificationFailed": {
+      "Type": "Fail",
+      "Cause": "Failed to send Slack notification"
+    }
+  }
+}
