@@ -55,10 +55,22 @@ resource "aws_cloudwatch_event_connection" "slack_webhook" {
   }
 }
 
+# CloudWatch Log Group for Step Functions
+resource "aws_cloudwatch_log_group" "step_functions" {
+  name              = "/aws/stepfunctions/ServiceQuotaMonitoring-SlackNotification"
+  retention_in_days = 14
+}
+
 # Step Functions State Machine
 resource "aws_sfn_state_machine" "slack_notification" {
   name     = "ServiceQuotaMonitoring-SlackNotification"
   role_arn = aws_iam_role.step_functions.arn
+
+  logging_configuration {
+    level                  = "ALL"
+    include_execution_data = true
+    log_destination        = "${aws_cloudwatch_log_group.step_functions.arn}:*"
+  }
 
   definition = templatefile("${path.module}/statemachine/slack-notification.asl.json", {
     slack_webhook_url = var.slack_webhook_url
@@ -127,7 +139,8 @@ resource "aws_iam_role" "step_functions" {
   })
 }
 
-# IAM Policy for Step Functions to make HTTP requests
+# IAM Policy for Step Functions to make HTTP requests and logging
+# Reference: https://docs.aws.amazon.com/step-functions/latest/dg/cw-logs.html
 resource "aws_iam_role_policy" "step_functions" {
   name = "ServiceQuotaMonitoring-StepFunctions-Policy"
   role = aws_iam_role.step_functions.id
@@ -136,15 +149,22 @@ resource "aws_iam_role_policy" "step_functions" {
     Version = "2012-10-17"
     Statement = [
       {
+        # CloudWatch Logs permissions for Step Functions logging
+        # Reference: https://docs.aws.amazon.com/step-functions/latest/dg/cw-logs.html
         Effect = "Allow"
         Action = [
-          "logs:CreateLogGroup",
+          "logs:CreateLogDelivery",
           "logs:CreateLogStream",
+          "logs:GetLogDelivery",
+          "logs:UpdateLogDelivery",
+          "logs:DeleteLogDelivery",
+          "logs:ListLogDeliveries",
           "logs:PutLogEvents",
-          "logs:DescribeLogGroups",
-          "logs:DescribeLogStreams"
+          "logs:PutResourcePolicy",
+          "logs:DescribeResourcePolicies",
+          "logs:DescribeLogGroups"
         ]
-        Resource = "arn:aws:logs:*:*:*"
+        Resource = "*"
       },
       {
         Effect = "Allow"
