@@ -16,6 +16,10 @@ resource "aws_cloudwatch_event_rule" "service_quota_monitoring" {
         "VPC",
         "VPC Internet Gateways",
         "EC2-VPC Elastic IP Address",
+        "Underutilized Amazon EBS Volumes",
+        "Amazon Route 53 Latency Resource Record Sets",
+        "Amazon EC2 Reserved Instances Optimization",
+        "Low Utilization Amazon EC2 Instances",
       ]
     }
   })

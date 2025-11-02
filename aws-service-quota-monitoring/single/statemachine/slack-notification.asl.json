@@ -12,7 +12,7 @@
           "Content-Type": "application/json"
         },
         "RequestBody": {
-          "text.$": "States.Format('*Trusted Advisor Service Quota*\n\n*Check*: {}\n*Status*: {}\n*Region*: {}\n*Account*: {}\n\n*Console Link*: https://{}.signin.aws.amazon.com/console/trustedadvisor?region={}', $.checkname, $.status, $.region, $.account, $.account, $.region)"
+          "text.$": "States.Format('*Trusted Advisor Service Quota*\n\n*Check*: {}\n*Status*: {}\n*Account*: {}\n\n*Console Link*: https://{}.signin.aws.amazon.com/console/trustedadvisor?region={}', $.checkname, $.status, $.account, $.account, $.region)"
         },
         "InvocationConfig": {
           "ConnectionArn": "${connection_arn}"
