@@ -1,0 +1,203 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'AWS Service Quota Monitoring with Trusted Advisor, EventBridge, Step Functions, and Slack webhook integration (with region information)'
+
+Parameters:
+  SlackWebhookUrl:
+    Type: String
+    Description: 'Slack webhook URL for notifications'
+    NoEcho: true
+
+Resources:
+  # IAM Role for Step Functions
+  # Reference: https://docs.aws.amazon.com/step-functions/latest/dg/cw-logs.html
+  StepFunctionsServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ServiceQuotaMonitoring-StepFunctions-Role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: states.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: ServiceQuotaMonitoring-StepFunctions-Policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              # CloudWatch Logs permissions for Step Functions logging
+              # Reference: https://docs.aws.amazon.com/step-functions/latest/dg/cw-logs.html
+              # Note: Resource must be "*" as these API actions don't support specific resource ARNs
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogDelivery
+                  - logs:CreateLogStream
+                  - logs:GetLogDelivery
+                  - logs:UpdateLogDelivery
+                  - logs:DeleteLogDelivery
+                  - logs:ListLogDeliveries
+                  - logs:PutLogEvents
+                  - logs:PutResourcePolicy
+                  - logs:DescribeResourcePolicies
+                  - logs:DescribeLogGroups
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - states:InvokeHTTPEndpoint
+                Resource: '*'
+                Condition:
+                  StringEquals:
+                    'states:HTTPEndpoint': !Ref SlackWebhookUrl
+              - Effect: Allow
+                Action:
+                  - events:RetrieveConnectionCredentials
+                Resource: !GetAtt SlackWebhookConnection.Arn
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                  - secretsmanager:DescribeSecret
+                Resource: !GetAtt SlackWebhookConnection.SecretArn
+
+  # IAM Role for EventBridge
+  EventBridgeServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ServiceQuotaMonitoring-EventBridge-Role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+              StringEquals:
+                aws:SourceArn: !Sub 'arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/ServiceQuotaMonitoring-Alert'
+                aws:SourceAccount: !Ref AWS::AccountId
+      Policies:
+        - PolicyName: ServiceQuotaMonitoring-EventBridge-Policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - states:StartExecution
+                Resource: !Ref SlackNotificationStateMachine
+
+  # EventBridge Connection for Slack webhook
+  SlackWebhookConnection:
+    Type: AWS::Events::Connection
+    Properties:
+      Name: ServiceQuotaMonitoring-SlackWebhook
+      Description: 'Connection for Slack webhook'
+      AuthorizationType: API_KEY
+      AuthParameters:
+        ApiKeyAuthParameters:
+          ApiKeyName: 'Authorization'
+          ApiKeyValue: 'Bearer dummy'
+
+  # CloudWatch Log Group for Step Functions
+  StepFunctionsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: '/aws/stepfunctions/ServiceQuotaMonitoring-SlackNotification'
+      RetentionInDays: 14
+
+  # Step Functions State Machine
+  SlackNotificationStateMachine:
+    Type: AWS::StepFunctions::StateMachine
+    Properties:
+      StateMachineName: ServiceQuotaMonitoring-SlackNotification
+      RoleArn: !GetAtt StepFunctionsServiceRole.Arn
+      LoggingConfiguration:
+        Level: ALL
+        IncludeExecutionData: true
+        Destinations:
+          - CloudWatchLogsLogGroup:
+              LogGroupArn: !GetAtt StepFunctionsLogGroup.Arn
+      DefinitionString: !Sub |
+        {
+          "Comment": "Send service quota alerts to Slack",
+          "StartAt": "SendSlackNotification",
+          "States": {
+            "SendSlackNotification": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::http:invoke",
+              "Parameters": {
+                "ApiEndpoint": "${SlackWebhookUrl}",
+                "Method": "POST",
+                "Headers": {
+                  "Content-Type": "application/json"
+                },
+                "RequestBody": {
+                  "text.$": "States.Format('*Trusted Advisor Service Quota*\n\n*Check*: {}\n*Status*: {}\n*Account*: {}\n*Region*: {}\n\n*Console Link*: https://{}.signin.aws.amazon.com/console/trustedadvisor?region={}', $.checkname, $.status, $.account, $.checkregion, $.account, $.region)"
+                },
+                "InvocationConfig": {
+                  "ConnectionArn": "${SlackWebhookConnection.Arn}"
+                }
+              },
+              "End": true,
+              "Retry": [
+                {
+                  "ErrorEquals": ["States.Http.HttpRequestFailed"],
+                  "IntervalSeconds": 5,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2.0
+                }
+              ],
+              "Catch": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "Next": "NotificationFailed"
+                }
+              ]
+            },
+            "NotificationFailed": {
+              "Type": "Fail",
+              "Cause": "Failed to send Slack notification"
+            }
+          }
+        }
+
+  # EventBridge Rule for Service Quota Monitoring
+  ServiceQuotaMonitoringRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: ServiceQuotaMonitoring-Alert
+      Description: 'Monitor AWS service quotas via Trusted Advisor alerts'
+      EventPattern:
+        source:
+          - aws.trustedadvisor
+          - custom.testing # テスト用 テスト時のみコメントイン
+        detail-type:
+          - Trusted Advisor Check Item Refresh Notification
+        detail:
+          status:
+            - ERROR
+            - WARN
+          check-name:
+            - VPC
+            - VPC Internet Gateways
+            - EC2-VPC Elastic IP Address
+            - Auto Scaling Groups
+      State: ENABLED
+      Targets:
+        - Arn: !Ref SlackNotificationStateMachine
+          Id: ServiceQuotaMonitoringStepFunctionsTarget
+          RoleArn: !GetAtt EventBridgeServiceRole.Arn
+          InputTransformer:
+            InputPathsMap:
+              account: $.account
+              checkname: $.detail.check-name
+              status: $.detail.status
+              region: $.region
+              checkregion: $.detail.check-item-detail.Region
+            InputTemplate: |
+              {
+                "account": "<account>",
+                "checkname": "<checkname>",
+                "status": "<status>",
+                "region": "<region>",
+                "checkregion": "<checkregion>"
+              }

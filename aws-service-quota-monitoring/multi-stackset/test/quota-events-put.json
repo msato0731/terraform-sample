@@ -1,0 +1,30 @@
+[
+  {
+    "Source": "custom.testing",
+    "DetailType": "Trusted Advisor Check Item Refresh Notification",
+    "Detail": "{\"check-name\":\"Auto Scaling Groups\",\"check-item-detail\":{\"Status\":\"Green\",\"Current Usage\":\"0\",\"Limit Name\":\"Auto Scaling groups\",\"Region\":\"us-east-2\",\"Service\":\"AutoScaling\",\"Limit Amount\":\"500\"},\"status\":\"WARN\",\"resource_id\":\"\",\"uuid\":\"b3626017-512e-4e4d-9d26-7d377ed3d6c4\"}",
+    "Time": "2025-11-04T01:53:23Z",
+    "Resources": []
+  },
+  {
+    "Source": "custom.testing",
+    "DetailType": "Trusted Advisor Check Item Refresh Notification",
+    "Detail": "{\"check-name\":\"EC2-VPC Elastic IP Address\",\"check-item-detail\":{\"Status\":\"Green\",\"Current Usage\":\"0\",\"Limit Name\":\"EC2-VPC Elastic IP addresses (EIPs)\",\"Region\":\"eu-west-3\",\"Service\":\"VPC\",\"Limit Amount\":\"5\"},\"status\":\"ERROR\",\"resource_id\":\"\",\"uuid\":\"79050973-a7c4-4fbf-bf50-0573a6243b61\"}",
+    "Time": "2025-11-04T02:00:50Z",
+    "Resources": []
+  },
+  {
+    "Source": "custom.testing",
+    "DetailType": "Trusted Advisor Check Item Refresh Notification",
+    "Detail": "{\"check-name\":\"VPC\",\"check-item-detail\":{\"Status\":\"Yellow\",\"Current Usage\":\"3\",\"Limit Name\":\"VPCs\",\"Region\":\"us-west-1\",\"Service\":\"VPC\",\"Limit Amount\":\"5\"},\"status\":\"WARN\",\"resource_id\":\"\",\"uuid\":\"12345678-1234-5678-9012-123456789012\"}",
+    "Time": "2025-11-04T03:15:30Z",
+    "Resources": []
+  },
+  {
+    "Source": "custom.testing",
+    "DetailType": "Trusted Advisor Check Item Refresh Notification",
+    "Detail": "{\"check-name\":\"VPC Internet Gateways\",\"check-item-detail\":{\"Status\":\"Red\",\"Current Usage\":\"4\",\"Limit Name\":\"Internet gateways\",\"Region\":\"ap-northeast-1\",\"Service\":\"VPC\",\"Limit Amount\":\"5\"},\"status\":\"ERROR\",\"resource_id\":\"\",\"uuid\":\"87654321-4321-8765-2109-876543210987\"}",
+    "Time": "2025-11-04T04:22:45Z",
+    "Resources": []
+  }
+]
