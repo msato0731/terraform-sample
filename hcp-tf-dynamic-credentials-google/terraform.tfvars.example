@@ -1,0 +1,4 @@
+tfc_organization_name = "my-organization"
+gcp_project_id = "my.project.id"
+hcp_tf_project_name       = "my-google-cloud"
+hcp_tf_variables_set_name = "my-google-cloud-auth"
