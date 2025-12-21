@@ -1,0 +1,5 @@
+region = "ap-northeast-1"
+
+user_given_name  = "Taro"
+user_family_name = "Yamada"
+user_email       = "yamada.taro@example.com"
