@@ -1,0 +1,11 @@
+region    = "ap-northeast-1"
+role_name = "github-actions-role"
+
+repositories = [
+  "your-org/your-repo",
+  "your-org/another-repo:ref:refs/heads/main"
+]
+
+attach_policies = [
+  "arn:aws:iam::aws:policy/ReadOnlyAccess"
+]
