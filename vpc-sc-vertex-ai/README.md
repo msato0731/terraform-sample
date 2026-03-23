@@ -134,8 +134,8 @@ sudo dnf install -y google-cloud-cli
 #### ③ Python環境のセットアップ
 
 ```bash
-sudo dnf install -y python3.11
-python3.11 -m venv ~/vertex-ai-test
+sudo dnf install -y python3.14
+python3.14 -m venv ~/vertex-ai-test
 ~/vertex-ai-test/bin/pip install google-genai google-auth
 ```
 
