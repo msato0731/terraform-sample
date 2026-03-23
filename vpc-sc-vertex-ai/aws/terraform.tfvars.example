@@ -1,0 +1,8 @@
+# AWSリージョン（デフォルト: ap-northeast-1）
+# aws_region = "ap-northeast-1"
+
+# リソース名のプレフィックス（デフォルト: vpc-sc-test）
+# prefix = "vpc-sc-test"
+
+# アベイラビリティーゾーン（デフォルト: ap-northeast-1a）
+# az = "ap-northeast-1a"

@@ -1,0 +1,21 @@
+# 組織レベルリソースの名前プレフィックス（自分の名前など識別できるものを設定）
+prefix = "myname"
+
+# GCP組織ID（gcloud organizations list で確認）
+org_id = "123456789012"
+
+# GCPプロジェクトID
+project_id = "your-project-id"
+
+# GCPプロジェクト番号（gcloud projects describe <project_id> --format='value(projectNumber)' で確認）
+project_number = "123456789012"
+
+# AWSアカウントID（aws sts get-caller-identity で確認）
+aws_account_id = "123456789012"
+
+# EC2のIAMロール名（aws/terraform.tfvars の prefix + "-ec2-role"）
+ec2_iam_role_name = "vpc-sc-test-ec2-role"
+
+# Vertex AIへのアクセスを許可するCIDRリスト
+# aws/ apply後の nat_gateway_ip output の値を /32 で設定
+allowed_cidrs = ["x.x.x.x/32"]
