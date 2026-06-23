@@ -14,8 +14,9 @@ HashiCorp 公式の style-guide / module 設計の考え方を土台にしてい
 ## レビュー対象の特定
 
 1. 変更された `.tf` / `.tftest.hcl` を洗い出す
-   - PR レビュー時: `git diff origin/<base>...HEAD -- '*.tf'`（base が不明なら `git diff main...HEAD`）
+   - `git diff` が使えるなら: `git diff origin/<base>...HEAD -- '*.tf'`（base 不明なら `git diff main...HEAD`）
    - ローカル: `git diff` / `git diff --staged`
+   - **git が使えない CI 等では**、PR の変更ファイル一覧（コンテキストで渡される）から対象 `.tf` を特定し、`Read` で直接読む
 2. 追加・変更された行を中心に読む。削除行は「消したことで壊れる依存」だけ見る
 3. 変更ファイルが参照する周辺リソース（同ディレクトリの既存 `.tf`）も必要に応じて読む
 
