@@ -74,3 +74,5 @@ resource "aws_instance" "web" {
     Name = var.instance_name
   }
 }
+
+# trigger re-review: agent mode + inline comments verification
