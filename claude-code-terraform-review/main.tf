@@ -75,4 +75,4 @@ resource "aws_instance" "web" {
   }
 }
 
-# trigger re-review: capture execution log to find minimal allowedTools (run A, baseline)
+# trigger re-review: capture execution log to find minimal allowedTools (run A, baseline retry)
