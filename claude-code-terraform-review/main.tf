@@ -75,4 +75,4 @@ resource "aws_instance" "web" {
   }
 }
 
-# trigger re-review: capture execution log to find minimal allowedTools (run A, baseline retry)
+# trigger re-review: run B, trimmed allowedTools (drop Glob/Grep) to confirm denials:0

@@ -31,7 +31,7 @@ jobs:
             各指摘は mcp__github_inline_comment__create_inline_comment で該当行にインラインコメントとして投稿してください。
             全体サマリ（HIGH/MEDIUM/LOW の件数）は gh pr comment でトップレベルコメントとして投稿してください。
           claude_args: |
-            --allowedTools "Read,Glob,Grep,mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
+            --allowedTools "Read,mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
       - name: Upload Claude execution log
         if: always()
         uses: actions/upload-artifact@v4
