@@ -75,4 +75,4 @@ resource "aws_instance" "web" {
   }
 }
 
-# trigger re-review: agent mode + inline comments verification
+# trigger re-review: capture execution log to find minimal allowedTools (run A, baseline)
