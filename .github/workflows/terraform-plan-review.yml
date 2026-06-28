@@ -26,7 +26,6 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ap-northeast-1
       - uses: hashicorp/setup-terraform@v4
-      # backend.tf（S3 backend）をコミットしておくと、init がローカルで apply 済みの state（S3 上）を読む。
       - run: terraform init
       - run: terraform plan -out=tfplan
       - run: terraform show -json tfplan > plan.json
