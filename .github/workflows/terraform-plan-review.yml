@@ -1,0 +1,46 @@
+name: terraform-plan-review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - "claude-code-terraform-plan-review/**"
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  plan-review:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: claude-code-terraform-plan-review
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ap-northeast-1
+      - uses: hashicorp/setup-terraform@v4
+      # backend.tf（S3 backend）をコミットしておくと、init がローカルで apply 済みの state（S3 上）を読む。
+      - run: terraform init
+      - run: terraform plan -out=tfplan
+      - run: terraform show -json tfplan > plan.json
+      - id: claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            /terraform-plan-review claude-code-terraform-plan-review/plan.json をレビューしてください。
+            replace / delete を中心に、適用時のリスクを指摘してください。
+            結果は gh pr comment でトップレベルコメントとして投稿してください。
+          claude_args: |
+            --allowedTools "Read,Bash(jq:*),Bash(gh pr comment:*),Bash(gh pr view:*)"
