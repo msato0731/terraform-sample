@@ -1,0 +1,39 @@
+name: terraform-opa-check
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - "terraform-conftest-opa/**"
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  opa-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform-conftest-opa
+    steps:
+      - uses: actions/checkout@v7
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ap-northeast-1
+      - uses: hashicorp/setup-terraform@v4
+      - run: terraform init
+      - run: terraform plan -out=tfplan
+      - run: terraform show -json tfplan > plan.json
+      - shell: bash
+        run: |
+          docker run --rm -v "$PWD":/project \
+            openpolicyagent/conftest:v0.68.2 \
+            test plan.json --policy policy --output json | tee conftest-result.json
+      - if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: conftest-result
+          path: terraform-conftest-opa/conftest-result.json
