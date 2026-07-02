@@ -3,7 +3,8 @@ package main
 deny contains msg if {
 	some change in input.resource_changes
 	change.type == "aws_security_group"
-	change.change.actions[_] == "create"
+	some action in change.change.actions
+	action in {"create", "update"}
 	some ingress in change.change.after.ingress
 	some cidr in ingress.cidr_blocks
 	cidr == "0.0.0.0/0"
