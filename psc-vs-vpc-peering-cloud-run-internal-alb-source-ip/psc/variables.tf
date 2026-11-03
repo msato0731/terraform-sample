@@ -1,0 +1,37 @@
+variable "project_id" {
+  description = "Google Cloud プロジェクト ID"
+  type        = string
+}
+
+variable "region" {
+  type    = string
+  default = "asia-northeast1"
+}
+
+variable "zone" {
+  type    = string
+  default = "asia-northeast1-a"
+}
+
+variable "domain_name" {
+  description = "VM が名前解決するドメイン（VM の /etc/hosts に登録）"
+  type        = string
+  default     = "app.lab.example.com"
+}
+
+variable "name_prefix" {
+  type    = string
+  default = "psc-lab"
+}
+
+variable "psc_nat_cidr" {
+  description = "PSC の NAT 用サブネット。IP の消費を観察しやすいよう小さくしている"
+  type        = string
+  default     = "10.20.2.0/28"
+}
+
+variable "app_image" {
+  description = "Cloud Run のイメージ。null なら Docker Hub の echo アプリ。切り分け用に差し替える"
+  type        = string
+  default     = null
+}
