@@ -1,5 +1,5 @@
 output "psc_endpoint_ip" {
-  description = "PSC エンドポイントの内部 IP（VM の /etc/hosts に登録される）"
+  description = "PSC エンドポイントの内部 IP（VM からここに接続する）"
   value       = google_compute_address.psc_endpoint.address
 }
 
@@ -21,6 +21,6 @@ output "curl_command_on_vm" {
   description = "VM 上で実行する確認コマンド（ID トークンを付けて呼び出す）"
   value       = <<-EOT
     TOKEN=$(curl -s -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity?audience=${google_cloud_run_v2_service.echo.uri}")
-    curl -sS -H "Authorization: Bearer $TOKEN" http://${var.domain_name}/
+    curl -sS -H "Authorization: Bearer $TOKEN" http://${google_compute_address.psc_endpoint.address}/
   EOT
 }

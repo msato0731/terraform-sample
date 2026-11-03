@@ -1,6 +1,0 @@
-#!/bin/bash
-set -eu
-
-# 独自ドメインを内部ALBの IP に向ける
-sed -i '/${domain_name}/d' /etc/hosts
-echo "${ilb_ip} ${domain_name}" >> /etc/hosts

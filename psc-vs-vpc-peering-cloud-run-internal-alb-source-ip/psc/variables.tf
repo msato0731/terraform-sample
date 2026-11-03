@@ -13,12 +13,6 @@ variable "zone" {
   default = "asia-northeast1-a"
 }
 
-variable "domain_name" {
-  description = "VM が名前解決するドメイン（VM の /etc/hosts に登録）"
-  type        = string
-  default     = "app.lab.example.com"
-}
-
 variable "name_prefix" {
   type    = string
   default = "psc-lab"

@@ -1,6 +1,0 @@
-#!/bin/bash
-set -eu
-
-# 独自ドメインを PSC エンドポイントの IP に向ける
-sed -i '/${domain_name}/d' /etc/hosts
-echo "${endpoint_ip} ${domain_name}" >> /etc/hosts

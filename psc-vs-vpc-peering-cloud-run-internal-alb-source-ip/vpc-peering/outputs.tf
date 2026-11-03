@@ -1,5 +1,5 @@
 output "ilb_ip" {
-  description = "内部ALBの IP（公開側 VPC。VM の /etc/hosts に登録される。Peering 経由で届く）"
+  description = "内部ALBの IP（公開側 VPC。Peering 経由で届く）"
   value       = google_compute_forwarding_rule.ilb.ip_address
 }
 
@@ -21,6 +21,6 @@ output "curl_command_on_vm" {
   description = "VM 上で実行する確認コマンド（ID トークンを付けて呼び出す）"
   value       = <<-EOT
     TOKEN=$(curl -s -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity?audience=${google_cloud_run_v2_service.echo.uri}")
-    curl -sS -H "Authorization: Bearer $TOKEN" http://${var.domain_name}/
+    curl -sS -H "Authorization: Bearer $TOKEN" http://${google_compute_forwarding_rule.ilb.ip_address}/
   EOT
 }
