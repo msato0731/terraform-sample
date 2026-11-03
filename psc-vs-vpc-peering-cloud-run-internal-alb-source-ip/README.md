@@ -4,10 +4,10 @@ Private Service Connect（PSC）と VPC Network Peering で、内部アプリケ
 
 | ディレクトリ | 内容 |
 | --- | --- |
-| [psc](./psc/) | 接続側 VPC の PSC エンドポイント → サービスアタッチメント → 内部ALB |
-| [vpc-peering](./vpc-peering/) | 接続側 VPC と公開側 VPC を Peering でつなぎ、VM から内部ALBのIPへ直接 |
+| [psc](./psc/) | Consumer VPC の PSC エンドポイント → サービスアタッチメント → 内部ALB |
+| [vpc-peering](./vpc-peering/) | Consumer VPC とProducer VPC を Peering でつなぎ、VM から内部ALBのIPへ直接 |
 
-どちらも、接続側 VPC に外部IPなしの VM を置き、IAP 経由の SSH で `curl` を実行します。
+どちらも、Consumer VPC に外部IPなしの VM を置き、IAP 経由の SSH で `curl` を実行します。
 
 ## 実行方法
 
