@@ -28,7 +28,7 @@ resource "google_cloud_run_v2_service" "echo" {
     }
 
     containers {
-      image = coalesce(var.app_image, "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.dockerhub.repository_id}/mendhak/http-https-echo:43")
+      image = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.dockerhub.repository_id}/mendhak/http-https-echo:43"
 
       ports {
         container_port = 8080

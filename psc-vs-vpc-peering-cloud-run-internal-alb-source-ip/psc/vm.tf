@@ -30,7 +30,6 @@ resource "google_compute_instance" "client" {
   metadata_startup_script = templatefile("${path.module}/startup.sh.tftpl", {
     endpoint_ip = google_compute_address.psc_endpoint.address
     domain_name = var.domain_name
-    cert_pem    = tls_self_signed_cert.app.cert_pem
   })
 
   depends_on = [google_compute_forwarding_rule.psc_endpoint]

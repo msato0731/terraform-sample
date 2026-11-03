@@ -29,9 +29,3 @@ variable "psc_nat_cidr" {
   type        = string
   default     = "10.20.2.0/28"
 }
-
-variable "app_image" {
-  description = "Cloud Run のイメージ。null なら Docker Hub の echo アプリ。切り分け用に差し替える"
-  type        = string
-  default     = null
-}

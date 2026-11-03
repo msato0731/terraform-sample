@@ -30,6 +30,5 @@ resource "google_compute_instance" "client" {
   metadata_startup_script = templatefile("${path.module}/startup.sh.tftpl", {
     ilb_ip      = google_compute_forwarding_rule.ilb.ip_address
     domain_name = var.domain_name
-    cert_pem    = tls_self_signed_cert.app.cert_pem
   })
 }

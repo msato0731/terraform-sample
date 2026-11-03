@@ -6,10 +6,6 @@ terraform {
       source  = "hashicorp/google"
       version = "~> 8.9"
     }
-    tls = {
-      source  = "hashicorp/tls"
-      version = "~> 4.0"
-    }
   }
 }
 
