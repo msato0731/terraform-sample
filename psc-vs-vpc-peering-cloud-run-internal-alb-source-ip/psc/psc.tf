@@ -1,5 +1,5 @@
 # 公開側: サービスアタッチメント
-resource "google_compute_service_attachment" "app" {
+resource "google_compute_service_attachment" "producer" {
   name        = "${var.name_prefix}-attachment"
   region      = var.region
   description = "内部ALBを PSC で公開する"
@@ -23,14 +23,14 @@ resource "google_compute_address" "psc_endpoint" {
   name         = "${var.name_prefix}-endpoint-ip"
   region       = var.region
   address_type = "INTERNAL"
-  subnetwork   = google_compute_subnetwork.lan.id
+  subnetwork   = google_compute_subnetwork.consumer.id
 }
 
 resource "google_compute_forwarding_rule" "psc_endpoint" {
   name                  = "${var.name_prefix}-endpoint"
   region                = var.region
-  network               = google_compute_network.lan.id
+  network               = google_compute_network.consumer.id
   ip_address            = google_compute_address.psc_endpoint.id
-  target                = google_compute_service_attachment.app.id
+  target                = google_compute_service_attachment.producer.id
   load_balancing_scheme = ""
 }

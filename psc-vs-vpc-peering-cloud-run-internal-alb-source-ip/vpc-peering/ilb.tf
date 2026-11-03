@@ -36,8 +36,8 @@ resource "google_compute_forwarding_rule" "ilb" {
   name                  = "${var.name_prefix}-ilb"
   region                = var.region
   load_balancing_scheme = "INTERNAL_MANAGED"
-  network               = google_compute_network.app.id
-  subnetwork            = google_compute_subnetwork.app.id
+  network               = google_compute_network.producer.id
+  subnetwork            = google_compute_subnetwork.producer.id
   ip_protocol           = "TCP"
   port_range            = "80"
   target                = google_compute_region_target_http_proxy.echo.id

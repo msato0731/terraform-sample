@@ -19,7 +19,7 @@ resource "google_compute_instance" "client" {
   }
 
   network_interface {
-    subnetwork = google_compute_subnetwork.lan.id
+    subnetwork = google_compute_subnetwork.consumer.id
   }
 
   service_account {
